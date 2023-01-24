@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="windows-1251" standalone="yes"?>
+<root>
+  <fields>
+    <field100>982</field100>
+    <AMOUNT>800.00</AMOUNT>
+    <AMOUNT_ALL>800.00</AMOUNT_ALL>
+  </fields>
+  <processor_type>External</processor_type>
+  <operator_id>10001</operator_id>
+  <initial_session_num>2401231150554071121B</initial_session_num>
+  <last_session></last_session>
+  <transid></transid>
+  <status>0</status>
+  <last_error_code>0</last_error_code>
+  <cancelled>0</cancelled>
+  <payment_create_dt>24.01.2023 11:50:55</payment_create_dt>
+  <first_try_dt>24.01.2023 11:50:55</first_try_dt>
+  <next_try_dt>24.01.2023 12:51:20</next_try_dt>
+  <num_of_tries>1</num_of_tries>
+  <notes>
+    <note validator_id="0" currency_id="RUR" nominal="500" count="1"/>
+    <note validator_id="0" currency_id="RUR" nominal="100" count="3"/>
+  </notes>
+  <saved_data></saved_data>
+  <saved_card_string></saved_card_string>
+  <last_payment_error_code>0</last_payment_error_code>
+</root>
