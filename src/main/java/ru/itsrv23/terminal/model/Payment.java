@@ -16,7 +16,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Data
 public class Payment {
-    private Integer auto;
+    private Integer account;
     private BigDecimal amount;
     private LocalDateTime paymentCr;
     private LocalDateTime processCr;
@@ -28,11 +28,23 @@ public class Payment {
             throw new PaymentMappingException();
         }
         return Payment.builder()
-                .auto(paymentDto.getField().getAuto())
+                .account(paymentDto.getField().getAccount())
                 .amount(paymentDto.getField().getAmount())
                 .session(paymentDto.getSession())
                 .paymentCr(LocalDateTime.parse(paymentDto.getPaymentCreateDt(), DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")))
                 .processCr(LocalDateTime.now())
                 .build();
+    }
+
+    public String toCsv() {
+        String d = ";";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder
+                .append(paymentCr).append(d)
+                .append(account).append(d)
+                .append(amount).append(d)
+                .append(session).append(d)
+                .append("\n");
+        return stringBuilder.toString();
     }
 }

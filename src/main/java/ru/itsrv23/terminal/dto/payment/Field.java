@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @Data
 public class Field {
     @JacksonXmlProperty(localName = "field100")
-    private Integer auto;
+    private Integer account;
     @JacksonXmlProperty(localName = "AMOUNT")
     private BigDecimal amount;
 }
