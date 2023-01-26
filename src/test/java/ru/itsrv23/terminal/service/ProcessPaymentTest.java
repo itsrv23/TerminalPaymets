@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@ActiveProfiles("test")
 @SpringBootTest
 class ProcessPaymentTest {
     @SpyBean
@@ -28,7 +27,7 @@ class ProcessPaymentTest {
 
     @Test
     void readXml() throws Exception {
-        Payment payment = processPayment.parseFile();
+        Payment payment = processPayment.parseFile("src/test/resources/xml");
 
         Assertions.assertThat(payment.getAccount()).isEqualTo(expected().getAccount());
         Assertions.assertThat(payment.getAmount()).isEqualTo("10.00");

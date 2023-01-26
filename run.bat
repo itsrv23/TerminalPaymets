@@ -1,0 +1,1 @@
+java -jar terminalpayments.jar --spring.config.location=file:app.properties

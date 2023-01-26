@@ -10,14 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import ru.itsrv23.terminal.dto.PaymentDto;
 import ru.itsrv23.terminal.dto.ResponseDto;
 import ru.itsrv23.terminal.model.Payment;
 
-import javax.swing.text.SimpleAttributeSet;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -61,9 +60,15 @@ public class ProcessPayment {
         ResponseDto responseDto = sendPayment(payment);
         if (Objects.nonNull(responseDto)) {
             //TODO если сервер отбил с не верным позывным, подумать о тиките для Администоратора
+            if (responseDto.getResult().equals(0)) {
+                log.info("Success :: {}", payment.toCsv());
+            } else {
+                log.info("Something wrong :: {}, {}", payment.toCsv(), responseDto);
+            }
             writeOnSuccess(payment);
             delete(payment.getPath());
         } else {
+            log.info("Something wrong, ResponseDto is null :: {}", payment.toCsv());
             replaceOnFail(payment.getPath());
         }
     }
@@ -106,6 +111,7 @@ public class ProcessPayment {
         if (Objects.nonNull(responseDto)) {
             writeOnSuccess(payment);
             delete(payment.getPath());
+            log.info("Success :: {}", payment.toCsv());
         }
     }
 
@@ -118,10 +124,16 @@ public class ProcessPayment {
                 .port(port)
                 .build()
                 .toUri();
-
-        ResponseEntity<String> entity = restTemplate.getForEntity(uri, String.class);
-
-        return entity.getStatusCode().is2xxSuccessful();
+        ResponseEntity<String> entity=null;
+        try {
+            entity = restTemplate.getForEntity(uri, String.class);
+        } catch (ResourceAccessException e) {
+            log.info("Connection error {}", uri);
+        }
+        if (Objects.nonNull(entity)){
+            return entity.getStatusCode().is2xxSuccessful();
+        }
+        return false;
     }
 
     @SneakyThrows
@@ -134,7 +146,7 @@ public class ProcessPayment {
         XmlMapper mapper = new XmlMapper();
         File dir = new File(path);
         File[] files = dir.listFiles();
-        log.info("Count files :: {}", files.length);
+        log.debug("Count files :: {}", files.length);
         for (File file : files) {
             if (file.isFile() && file.getName().endsWith(".pkt")) {
                 PaymentDto paymentDto = mapper.readValue(file, PaymentDto.class);
@@ -165,22 +177,32 @@ public class ProcessPayment {
         log.debug(uri.toString());
 
         XmlMapper mapper = new XmlMapper();
-        ResponseDto responseDto;
+        ResponseDto responseDto = null;
         try {
             ResponseEntity<String> entity = restTemplate.getForEntity(uri, String.class);
             responseDto = mapper.readValue(entity.getBody(), ResponseDto.class);
             log.debug("responseDto :: {}", responseDto);
-        } catch (RestClientException e) {
-            return null;
+        } catch (ResourceAccessException e) {
+            log.info("Connection error {}", uri);
         }
         return responseDto;
     }
 
     public void createDirIfNotExists() {
         try {
-            Files.createDirectory(Paths.get(sourcePath));
-            Files.createDirectory(Paths.get(sourceFail));
-            Files.createDirectory(Paths.get(sourceCsv));
+            log.info("sourcePath = {}", sourcePath);
+            log.info("sourceFail = {}", sourceFail);
+            log.info("sourceCsv = {}", sourceCsv);
+
+            if (Files.notExists(Paths.get(sourcePath))){
+                Files.createDirectory(Paths.get(sourcePath));
+            }
+            if (Files.notExists(Paths.get(sourceFail))){
+                Files.createDirectory(Paths.get(sourceFail));
+            }
+            if (Files.notExists(Paths.get(sourceCsv))){
+                Files.createDirectory(Paths.get(sourceCsv));
+            }
         } catch (IOException e) {
             //
         }
