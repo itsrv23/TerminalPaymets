@@ -31,7 +31,7 @@ public class Payment {
                 .account(paymentDto.getField().getAccount())
                 .amount(paymentDto.getField().getAmount())
                 .session(paymentDto.getSession())
-                .paymentCr(LocalDateTime.parse(paymentDto.getPaymentCreateDt(), DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")))
+                .paymentCr(LocalDateTime.parse(paymentDto.getPaymentCreateDt(), DateTimeFormatter.ofPattern("dd.MM.yyyy H:mm:ss")))
                 .processCr(LocalDateTime.now())
                 .build();
     }

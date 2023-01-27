@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ActiveProfiles;
 import ru.itsrv23.terminal.model.Payment;
 
 import java.math.BigDecimal;
@@ -18,7 +17,7 @@ class ProcessPaymentTest {
 
     static Payment expected(){
         return Payment.builder()
-                .paymentCr(LocalDateTime.parse("24.01.2023 11:50:55", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")))
+                .paymentCr(LocalDateTime.parse("24.01.2023 1:50:55", DateTimeFormatter.ofPattern("dd.MM.yyyy H:mm:ss")))
                 .amount(BigDecimal.valueOf(10))
                 .account(123456)
                 .session("2401231150554071121B")
@@ -35,7 +34,7 @@ class ProcessPaymentTest {
 
     @Test
     void convertDt() {
-        LocalDateTime dt = LocalDateTime.parse("24.01.2023 11:50:55", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"));
+        LocalDateTime dt = LocalDateTime.parse("24.01.2023 6:50:55", DateTimeFormatter.ofPattern("dd.MM.yyyy H:mm:ss"));
         System.out.println("offsetDateTime = " + dt);
     }
 
